@@ -22,4 +22,14 @@ class Trash extends Model
             "updated_at" => "datetime:Y-m-d",
         ];
     }
+
+    public function blogs()
+    {
+        return $this->belongsTo(Blog::class, 'blog_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

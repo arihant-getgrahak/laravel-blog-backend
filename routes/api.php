@@ -9,6 +9,7 @@ use App\Http\Controllers\ChildCatrgoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\UpdateProfileController;
+use App\Http\Controllers\TrashController;
 
 Route::get("/", function () {
     return response()->json([
@@ -94,6 +95,12 @@ Route::group(["prefix" => "rating"], function () {
     });
     Route::get("/{id}", [RatingController::class, "display"]);
     Route::get("avg/{id}", [RatingController::class, "displayavgRating"]);
+});
+
+Route::group(["prefix" => "trash"], function () {
+    Route::group(["middleware" => "auth:api"], function () {
+        Route::get("/", [TrashController::class, "display"]);
+    });
 });
 
 Route::get("verify/email/{userId}/{token}", [AuthController::class, "verifyEmail"]);
