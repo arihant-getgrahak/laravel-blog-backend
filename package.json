@@ -7,7 +7,7 @@
         "prepare": "husky"
     },
     "lint-staged": {
-        "**/*.php": "./vendor/bin/pint --preset laravel"
+        "**/*.php": "./vendor/bin/pint"
     },
     "devDependencies": {
         "axios": "^1.7.4",
