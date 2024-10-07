@@ -22,11 +22,19 @@ class UpdateProfileController extends Controller
         }
 
         $isUpdate = $user->update(attributes: $data);
+
+        if ($request->hasFile('image')) {
+            $user->clearMediaCollection('user_photo');
+            $user->addMediaFromRequest("image")->toMediaCollection('user_photo');
+            $mediaItems = $user->getMedia("user_photo");
+            $user["profile_image"] = $mediaItems[0]->original_url;
+            $user->makeHidden("media");
+        }
         if ($isUpdate) {
             return response()->json([
                 "status" => true,
                 "message" => "Profile updated successfully",
-                "data" => $user->fresh()
+                "data" => $user
             ], 200);
         }
         return response()->json([
