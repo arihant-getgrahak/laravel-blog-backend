@@ -103,9 +103,9 @@ class BlogController extends Controller
 
         $filldata = $request->only(['title', 'description', 'parent_category', 'tag', 'child_category', 'type']);
 
-        if ($request->hasFile('image')) {
-            $filldata['photo'] = $this->uploadImage($request->file('image'));
-        }
+        // if ($request->hasFile('image')) {
+        //     $filldata['photo'] = $this->uploadImage($request->file('image'));
+        // }
         $sendData = [
             "subject" => "Blog with id." . $slug . " updated",
             "title" => $request->title,
@@ -113,6 +113,14 @@ class BlogController extends Controller
         ];
 
         $isUpdate = $blog->update($filldata);
+
+        if ($request->hasFile('image')) {
+            $blog->clearMediaCollection('blog_photo');
+            $blog->addMediaFromRequest("image")->toMediaCollection('blog_photo');
+            $mediaItems = $blog->getMedia("blog_photo");
+            $blog["photo"] = $mediaItems[0]->original_url;
+            $blog->makeHidden("media");
+        }
         if (!$isUpdate) {
             return response()->json([
                 "status" => false,
@@ -124,7 +132,7 @@ class BlogController extends Controller
         return response()->json([
             "status" => true,
             "message" => "Blog updated successfully",
-            "data" => $blog->fresh()
+            "data" => $blog
         ]);
     }
 
