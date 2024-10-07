@@ -15,7 +15,7 @@ class BlogController extends Controller
     {
         $blogs = Blog::where("isdeleted", false)
             ->where("type", "publish")
-            ->with(["users:id,name", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name"])
+            ->with(["users:id,name", "deletedBy:id,name", "parentCategory:id,name", "childCategory:id,name", "media"])
             ->paginate(10);
 
         $returnData = [];
@@ -26,7 +26,7 @@ class BlogController extends Controller
                 "slug" => $blog->slug,
                 "title" => $blog->title,
                 "description" => $blog->description,
-                "photo" => $blog->photo,
+                "photo" => $blog->getFirstMediaUrl('blog_photo', 'original') ?? null,
                 "category" => $blog->parentCategory->name ?? "",
                 "sub_category" => $blog->childCategory->name ?? "",
                 "tag" => $blog->tag ?? "",
@@ -38,7 +38,6 @@ class BlogController extends Controller
                     "meta.desc" => $blog->description,
                     "meta.robots" => "noindex, nofollow"
                 ]
-
             ];
         }
         $pagination = [
@@ -50,7 +49,8 @@ class BlogController extends Controller
             "status" => true,
             "message" => "Blog fetched successfully",
             "data" => $returnData,
-            "pagination" => $pagination
+            "pagination" => $pagination,
+            // "media" => $mediaItems
         ], 200);
 
     }
@@ -64,15 +64,6 @@ class BlogController extends Controller
                 "message" => "Blog with this slug already exists",
             ]);
         }
-        // $blog = new Blog();
-
-        // $blog->addMediaFromRequest("photo")->toMediaCollection('photo');
-        // $mediaItems = $blog->getMedia("*");
-        // echo "dds";
-        // $imageUrl = $mediaItems[0]->getUrl();
-        // echo "ddss";
-        // $imageUrl = $mediaItems[0]->original_url;
-        // echo "ddsss";
 
         $filldata = [
             "user_id" => auth()->id(),
