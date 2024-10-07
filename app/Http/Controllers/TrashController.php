@@ -21,4 +21,28 @@ class TrashController extends Controller
             "data" => $trash
         ]);
     }
+
+    public function delete(int $trashId)
+    {
+        $trashExist = Trash::find($trashId);
+        if (!$trashExist) {
+            return response()->json([
+                "status" => "error",
+                "message" => "Trash not found"
+            ]);
+        }
+
+        $delete = $trashExist->delete();
+
+        if (!$delete) {
+            return response()->json([
+                "status" => "error",
+                "message" => "Trash delete failed"
+            ]);
+        }
+        return response()->json([
+            "status" => "success",
+            "message" => "Trash deleted successfully"
+        ]);
+    }
 }
