@@ -17,10 +17,6 @@ class UpdateProfileController extends Controller
             "email",
         ]);
 
-        if ($request->hasFile('profile_image')) {
-            $data['profile_image'] = $this->uploadImage($request->file('profile_image'));
-        }
-
         $isUpdate = $user->update(attributes: $data);
 
         if ($request->hasFile('image')) {
