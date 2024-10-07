@@ -100,6 +100,7 @@ Route::group(["prefix" => "rating"], function () {
 Route::group(["prefix" => "trash"], function () {
     Route::group(["middleware" => "auth:api"], function () {
         Route::get("/", [TrashController::class, "display"]);
+        Route::delete("/delete/{id}", [TrashController::class, "delete"]);
     });
 });
 
