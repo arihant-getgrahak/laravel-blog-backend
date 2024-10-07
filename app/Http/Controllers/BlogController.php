@@ -57,51 +57,48 @@ class BlogController extends Controller
 
     public function store(BlogStoreRequest $request)
     {
-        $slug = null;
-        if ($request->slug) {
-            $isBlogExist = Blog::where("slug", $request->slug)->first();
-            if ($isBlogExist) {
-                return response()->json([
-                    "status" => false,
-                    "message" => "Blog with this slug already exist",
-                ]);
-            } else {
-                $slug = $request->slug;
-            }
-        } else {
-            $slug = $this->slug($request->title);
+        $slug = $request->slug ?? $this->slug($request->title);
+        if ($request->slug && Blog::where("slug", $slug)->exists()) {
+            return response()->json([
+                "status" => false,
+                "message" => "Blog with this slug already exists",
+            ]);
         }
+        // $blog = new Blog();
+
+        // $blog->addMediaFromRequest("photo")->toMediaCollection('photo');
+        // $mediaItems = $blog->getMedia("*");
+        // echo "dds";
+        // $imageUrl = $mediaItems[0]->getUrl();
+        // echo "ddss";
+        // $imageUrl = $mediaItems[0]->original_url;
+        // echo "ddsss";
+
         $filldata = [
-            "user_id" => auth()->user()->id,
+            "user_id" => auth()->id(),
             "title" => $request->title,
             "description" => $request->description,
-            "photo" => $request->file('image') ? $this->uploadImage($request->file('image')) : null,
             "parent_category" => $request->category,
             "tag" => $request->tag,
             "child_category" => $request->sub_category,
             "slug" => $slug,
-            "type" => $request->type
-        ];
-
-        $sendData = [
-            "subject" => "New blog created",
-            "title" => $request->title,
-            "description" => $request->description
+            "type" => $request->type,
+            "photo" => ""
         ];
 
         $blog = Blog::create($filldata);
-        // Http::post("https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzNTA0MzI1MjZlNTUzMDUxMzQi_pc", $sendData);
+        $blog->addMediaFromRequest("image")->toMediaCollection('blog_photo');
+        $mediaItems = $blog->getMedia("blog_photo");
+        $blog["photo"] = $mediaItems[0]->original_url;
+        $blog->makeHidden("media");
 
-        if ($request->type === "draft") {
-            return response()->json([
-                "status" => true,
-                "message" => "Draft created successfully",
-            ], 200);
-        }
+        // $this->sendBlogWebhook($request->title, $request->description);
+
+        $message = $request->type === "draft" ? "Draft created successfully" : "Blog created successfully";
         return response()->json([
             "status" => true,
-            "message" => "Blog created successfully",
-            "data" => $blog
+            "message" => $message,
+            "data" => $blog,
         ], 200);
     }
 
