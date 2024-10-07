@@ -43,15 +43,4 @@ class UpdateProfileController extends Controller
         ], 500);
 
     }
-
-    protected function uploadImage($file)
-    {
-        $uploadFolder = 'profile-image';
-        $image = $file;
-        $image_uploaded_path = $image->store($uploadFolder, 'public');
-        $uploadedImageUrl = Storage::disk('public')->url($image_uploaded_path);
-
-        return $uploadedImageUrl;
-    }
-
 }

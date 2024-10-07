@@ -232,16 +232,6 @@ class BlogController extends Controller
 
     }
 
-    protected function uploadImage($file)
-    {
-        $uploadFolder = 'blog-image';
-        $image = $file;
-        $image_uploaded_path = $image->store($uploadFolder, 'public');
-        $uploadedImageUrl = Storage::disk('public')->url($image_uploaded_path);
-
-        return $uploadedImageUrl;
-    }
-
     public function displaySpecificBlog(string $slug)
     {
         $blog = Blog::where("slug", $slug)
