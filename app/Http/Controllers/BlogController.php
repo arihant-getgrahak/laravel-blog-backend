@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Blog;
+namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Http\Requests\BlogStoreRequest;
 use App\Http\Requests\BlogUpdateRequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Trash;
 use Storage;
 use Str;
 
@@ -171,6 +171,10 @@ class BlogController extends Controller
             "deleted_by" => auth()->user()->id
         ]);
 
+        Trash::create([
+            "user_id" => auth()->user()->id,
+            "blog_id" => $blog_id
+        ]);
 
         if ($isUpdate)
             return response()->json([
