@@ -2,7 +2,7 @@
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Blog\BlogController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CatrgoryController;
 use App\Http\Controllers\ChildCatrgoryController;
