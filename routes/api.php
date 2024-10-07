@@ -95,3 +95,5 @@ Route::group(["prefix" => "rating"], function () {
     Route::get("/{id}", [RatingController::class, "display"]);
     Route::get("avg/{id}", [RatingController::class, "displayavgRating"]);
 });
+
+Route::get("verify/email/{userId}/{token}", [AuthController::class, "verifyEmail"]);
