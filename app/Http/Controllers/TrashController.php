@@ -22,7 +22,7 @@ class TrashController extends Controller
         ]);
     }
 
-    public function delete(int $trashId)
+    public function delete(string $trashId)
     {
         $trashExist = Trash::find($trashId);
         if (!$trashExist) {
