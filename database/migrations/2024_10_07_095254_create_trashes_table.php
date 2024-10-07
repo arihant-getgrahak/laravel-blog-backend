@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('trashes', function (Blueprint $table) {
-            $table->uuid("id")->primary();
+            $table->id();
             $table->foreignUuid("user_id")->constrained("users")->onDelete("cascade");
             $table->foreignUuid("blog_id")->constrained("blogs")->onDelete("cascade");
             $table->timestamps();
