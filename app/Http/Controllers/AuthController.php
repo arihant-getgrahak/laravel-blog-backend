@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Http;
+use Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
@@ -12,7 +14,6 @@ use App\Http\Requests\LoginRequest;
 class AuthController extends Controller
 {
 
-    //Register API (POST, Formdata)
     public function register(RegisterRequest $request)
     {
         $data = [
@@ -21,21 +22,27 @@ class AuthController extends Controller
             "password" => Hash::make($request->password),
             "type" => $request->type,
         ];
-        User::create($data);
+        $user = User::create($data);
 
-        // Response
+        if (!$user) {
+            return response()->json([
+                "error" => "Unable to create user",
+                "status" => false
+            ], 500);
+        }
+
+        $this->sendEmail($user);
+
         return response()->json([
             "status" => true,
             "message" => "User registered successfully"
         ]);
     }
 
-    //Login API (POST, Formdata)
     public function login(LoginRequest $request)
     {
         $request->validated();
 
-        // JWTAuth
         $token = JWTAuth::attempt([
             "email" => $request->email,
             "password" => $request->password
@@ -50,14 +57,12 @@ class AuthController extends Controller
             ]);
         }
 
-        // Response
         return response()->json([
             "status" => false,
             "message" => "Invalid details"
         ]);
     }
 
-    //Profile API (GET, autherization token value JWT)
     public function profile()
     {
         $userdata = auth()->user();
@@ -70,12 +75,10 @@ class AuthController extends Controller
     }
 
 
-    //Logout API(GET)
     public function logout()
     {
         $token = JWTAuth::getToken();
 
-        // invalidate token
         $invalidate = JWTAuth::invalidate($token);
 
         if ($invalidate) {
@@ -89,4 +92,20 @@ class AuthController extends Controller
             ]);
         }
     }
+
+    protected function sendEmail(object $user)
+    {
+        $app_url = env("APP_URL");
+        $token = Str::random(20);
+        $url = "$app_url/api/verify/email/$user->id/$token";
+        $data = [
+            "email" => $user->email,
+            "body" => "<a>$url</a>"
+        ];
+        $user->update([
+            'remember_token' => $token
+        ]);
+        Http::post("https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzMjA0M2M1MjY4NTUzZDUxMzQi_pc", $data);
+    }
+
 }
