@@ -65,7 +65,9 @@ class AuthController extends Controller
 
     public function profile()
     {
-        $userdata = auth()->user();
+        $userdata = User::with("media")->find(auth()->user()->id);
+        $userdata["profile_image"] = $userdata->getFirstMediaUrl("user_photo");
+        $userdata->makeHidden("media");
 
         return response()->json([
             "status" => true,
