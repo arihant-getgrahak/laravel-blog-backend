@@ -2,11 +2,17 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class AuthTest extends TestCase
 {
-    public function test_that_true_is_true()
+    use RefreshDatabase;
+
+    /**
+     * A basic unit test example.
+     */
+    public function user_register()
     {
         $response = $this->postJson('/api/auth/register', [
             'email' => 'admin1@admin.com',
@@ -26,10 +32,9 @@ class ExampleTest extends TestCase
         }
     }
 
-    /** @test */
     public function user_login()
     {
-        $response = $this->postJson('/api/auth/login', [
+        $response = $this->postJson('/api/en/auth/login', [
             'email' => 'admin1@admin.com',
             'password' => '123456789',
         ]);
