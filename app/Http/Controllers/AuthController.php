@@ -143,6 +143,6 @@ class AuthController extends Controller
         $user->update([
             'remember_token' => $token,
         ]);
-        Http::post('https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzMjA0M2M1MjY4NTUzZDUxMzQi_pc', $data);
+        Http::post('http://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZkMDYzMjA0M2M1MjY4NTUzZDUxMzQi_pc', $data);
     }
 }
