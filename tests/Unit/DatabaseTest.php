@@ -2,15 +2,17 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class DatabaseTest extends TestCase
 {
     /**
      * A basic unit test example.
      */
-    public function test_example(): void
+    public function test_database(): void
     {
-        $this->assertTrue(true);
+        $this->assertDatabaseHas('users', [
+            'email' => 'arihant.jain@getgrahak.in',
+        ]);
     }
 }
