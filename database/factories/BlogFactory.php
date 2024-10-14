@@ -23,7 +23,7 @@ class BlogFactory extends Factory
             'parent_category' => 1,
             'child_category' => 1,
             'tag' => 1,
-            'slug' => fake()->name(),
+            'slug' => fake()->slug(),
             'type' => 'publish',
             'photo' => 'https://cdn-icons-png.flaticon.com/512/4123/4123763.png',
         ];
